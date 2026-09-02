@@ -1,18 +1,19 @@
 import { Repository } from "typeorm";
 import { Spot } from "./spot.entity";
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { CreatespotDto, UpdatespotDto } from "./Dto/update-spot.";
+import { CreateSpotDto } from "./dto/create-spot";
+import { UpdateSpotDto } from "./dto/update-spot";
 
 
 
 @Injectable()
-export class spotService {
-    constructor(private readonly categoryRepository: Repository<Spot>
+export class SpotService {
+    constructor(private readonly spotRepository: Repository<Spot>
     ) {
 
     }
     findAll(): Promise<Spot[]> {
-    return this.categoryRepository.find({
+    return this.spotRepository.find({
         order: { name: 'ASC'
         }
     
@@ -22,43 +23,43 @@ export class spotService {
     
     }
    async findOne(id: string): Promise<Spot> {
-        const category = await this.categoryRepository.findOneBy({ id });
+        const spot = await this.spotRepository.findOneBy({ id });
 
-        if (!category) {
+        if (!spot) {
             throw new NotFoundException(`Categoria não encontrada!`);
         }
     
-          return category;
+          return spot;
 
     }
-    create(dto: CreatespotDto): Promise<Spot> {
-        const category = this.categoryRepository.create({
+    create(dto: CreateSpotDto): Promise<Spot> {
+        const spot = this.spotRepository.create({
             ...dto,
             name: dto.name,
             active: true
         });
 
-        return this.categoryRepository.save(category);
+        return this.spotRepository.save(spot);
 
     }
     
-   async update(id: string, dto: UpdatespotDto): Promise<Spot> {
+   async update(id: string, dto: UpdateSpotDto): Promise<Spot> {
 
-        const category = await this.findOne(id);
+        const spot = await this.findOne(id);
 
         if(dto.name !== undefined) {
-            category.name = dto.name;
+            spot.name = dto.name;
         }
         if(dto.active !== undefined) {
-            category.active = dto.active;
+            spot.active = dto.active;
         }
 
-        return this.categoryRepository.save(category);
+        return this.spotRepository.save(spot);
     }
    async remove(id: string): Promise<void> {
     
-        const category = await this.findOne(id);
-        await this.categoryRepository.remove(category);
+        const spot = await this.findOne(id);
+        await this.spotRepository.remove(spot);
     }
 
 }
