@@ -27,3 +27,5 @@ export class Product {
     @JoinColumn({ name: 'category_id' })
     category: Category | null;
 }
+
+export { Category };
