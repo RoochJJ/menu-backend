@@ -33,3 +33,5 @@ export class GuestCheck {
 
 
 }
+
+export { Spot };
