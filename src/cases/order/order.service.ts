@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadGatewayException, Injectable, NotFoundException } from "@nestjs/common";
 import { CreateOrderDto, CreateOrderItemDto } from "./dto/create-order";
 import { Order, OrderStatus } from "./entities/order.entity";
 import { OrderItem } from "./entities/order-item.entity";
@@ -6,6 +6,7 @@ import { GuestCheckService } from "../guest-checks/guest-check.service";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { ProductService } from "../products/product.service";
+import { UpdateOrderStatusDto } from "./dto/update-order-status";
 
 @Injectable()
 export class OrderService {
@@ -57,4 +58,45 @@ export class OrderService {
     // gravar no banco o pedido
     return this.orderRepository.save(order);
   }
+
+  findAll (): Promise<Order[]> {
+    return this.orderRepository.find({
+      order: {createdAt: 'ASC'}
+    });
+  }
+  
+      async findOne(id: string): Promise<Order> {
+          const order= await this.orderRepository.findOneBy({ id });
+  
+            if (!order) {
+              throw new NotFoundException(`Pedido não encontrada!`);
+          }
+  
+              return order;
+  
+      }
+
+      async updateStatus(id: string, dto: UpdateOrderStatusDto): 
+       Promise<Order>{
+        const order = await this.findOne (id);
+
+
+        const nextStatus: Record<OrderStatus, OrderStatus | undefined> = {
+          [OrderStatus.NEW]: OrderStatus.PREPARING,
+          [OrderStatus.PREPARING]: OrderStatus.READY,
+          [OrderStatus.READY]: OrderStatus.DELIVERED,
+          [OrderStatus.DELIVERED]: undefined
+        }
+        // Verifique se a transição pedido e a proprio validadq
+        if (nextStatus[order.status] !== dto.status){
+          throw new BadGatewayException ('Satus Invalido!');
+        }
+
+        // Força a mudança de Status
+        order.status = dto.status;
+
+        // Grava alteração no banco
+        return this.orderRepository.save(order);
+      }
+  
 }
