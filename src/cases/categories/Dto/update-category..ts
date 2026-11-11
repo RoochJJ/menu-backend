@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, MaxLength} from "class-validator";
+import { IsBoolean, IsNotEmpty, IsOptional, IsString, IsUrl, MaxLength} from "class-validator";
 
 export class UpdateCategoryDto {
     @IsOptional()
@@ -9,4 +9,9 @@ export class UpdateCategoryDto {
     @IsOptional()
     @IsBoolean()
     active?: boolean;
+
+    
+    @IsOptional()
+    @IsUrl()
+    icon?: string;
 }
