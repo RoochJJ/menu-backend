@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Patch, Delete, HttpCode, HttpStatus } from "@nestjs/common";
+import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Patch, Delete, HttpCode, HttpStatus, Query } from "@nestjs/common";
 import { Product } from "./product.entity";
 import { ProductService } from "./product.service";
 import { CreateProductDto } from "./dto/create-product";
@@ -13,8 +13,11 @@ export class ProductController {
   ){}
   
   @Get()
-  findAll() : Promise<Product[]> {
-    return this.service.findAll();
+  findAll(
+    @Query('categoryId', new ParseUUIDPipe({optional: true}))
+    categoryId?: string
+  ): Promise<Product[]> {
+    return this.service.findAll(categoryId);
   }
 
   @Get(':id')

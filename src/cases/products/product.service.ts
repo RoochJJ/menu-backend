@@ -15,9 +15,12 @@ export class ProductService {
     private readonly productRepository: Repository<Product>,
   ) {}
 
-  findAll(): Promise<Product[]> {
+  findAll(categoryId?: string): Promise<Product[]> {
     return this.productRepository.find({
       order: { name: 'ASC' },
+      where: {
+        ...(categoryId && { category: { id: categoryId } }),
+      }
     });
   }
 
