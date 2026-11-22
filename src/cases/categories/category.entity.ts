@@ -2,18 +2,19 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('category')
 export class Category {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column({ length: 60, nullable: false })
-    name: string;
+  @Column({ length: 60, nullable: false })
+  name: string;
 
-    @Column({ type: 'text', nullable: true })
-    icon: string;
+  @Column({ type: 'text', nullable: true })
+  icon: string | null;
 
-    @Column({ type: 'boolean', default: true })
-    active: boolean;
-    
-     
-  
+  // Ordem de exibição da categoria no cardápio (menor aparece primeiro)
+  @Column({ name: 'display_order', type: 'integer', default: 0 })
+  displayOrder: number;
+
+  @Column({ type: 'boolean', default: true })
+  active: boolean;
 }

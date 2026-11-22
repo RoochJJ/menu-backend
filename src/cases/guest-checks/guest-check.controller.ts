@@ -1,22 +1,24 @@
-/* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Param, ParseUUIDPipe, Post, Patch, Delete, HttpCode, HttpStatus } from "@nestjs/common";
-import { GuestCheckService } from "./guest-check.service";
-import { GuestCheck } from "./guest-check.entity";
-import { CreateGuestCheckDto } from "./dto/create-guest-check";
+import { Body, Controller, Get, Param, ParseEnumPipe, ParseUUIDPipe, Patch, Post, Query } from '@nestjs/common';
+import { GuestCheckService } from './guest-check.service';
+import { GuestCheck, GuestCheckStatus } from './guest-check.entity';
+import { CreateGuestCheckDto } from './dto/create-guest-check';
 
 @Controller('guest-checks')
 export class GuestCheckController {
+  constructor(private readonly service: GuestCheckService) {}
 
-  constructor(
-    private readonly service: GuestCheckService
-  ){}
-  
-  
+  // GET /guest-checks?status=OPENED
+  @Get()
+  findAll(
+    @Query('status', new ParseEnumPipe(GuestCheckStatus, { optional: true }))
+    status?: GuestCheckStatus,
+  ): Promise<GuestCheck[]> {
+    return this.service.findAll(status);
+  }
 
+  // Retorna a comanda com a mesa, os pedidos (itens + produto) e o total
   @Get(':id')
-  findOne(
-    @Param('id', ParseUUIDPipe)
-    id: string): Promise<GuestCheck> {
+  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<GuestCheck> {
     return this.service.findOne(id);
   }
 
@@ -26,10 +28,7 @@ export class GuestCheckController {
   }
 
   @Patch(':id/close')
-    close(
-      @Param('id', ParseUUIDPipe)
-      id: string): Promise<GuestCheck> {
-      return this.service.close(id);
-    }
-
+  close(@Param('id', ParseUUIDPipe) id: string): Promise<GuestCheck> {
+    return this.service.close(id);
+  }
 }

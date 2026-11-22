@@ -12,7 +12,7 @@ import {
 import { CategoryService } from './category.service';
 import { Category } from './category.entity';
 import { CreateCategoryDto } from './dto/create-category';
-import { UpdateCategoryDto } from './dto/update-category.';
+import { UpdateCategoryDto } from './dto/update-category';
 
 @Controller('categories')
 export class CategoryController {

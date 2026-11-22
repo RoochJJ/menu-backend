@@ -1,24 +1,24 @@
-import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, IsUUID, MaxLength, Min } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, IsUrl, IsUUID, MaxLength } from 'class-validator';
 
 export class UpdateProductDto {
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @MaxLength(60)
-  @IsOptional()
   name?: string;
 
   @IsOptional()
   @IsString()
-  description?: string;
+  description?: string | null;
 
-  @IsNumber({ maxDecimalPlaces: 2 })
-  @Min(0)
   @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @IsPositive()
   price?: number;
 
   @IsOptional()
   @IsUUID()
-  categoryId?: string;
+  categoryId?: string | null;
 
   @IsOptional()
   @IsBoolean()
@@ -26,5 +26,13 @@ export class UpdateProductDto {
 
   @IsOptional()
   @IsUrl({ require_protocol: true })
-  picture?: string;
+  picture?: string | null;
+
+  @IsOptional()
+  @IsBoolean()
+  vegetarian?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isNew?: boolean;
 }
